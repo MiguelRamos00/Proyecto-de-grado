@@ -1,0 +1,62 @@
+name: agente-orientacion
+
+services:
+  base_datos:
+    image: postgres:16-alpine
+    container_name: agente-orientacion-base-datos
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - datos_postgresql:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend
+    container_name: agente-orientacion-backend
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      PROVEEDOR_IA: ${PROVEEDOR_IA}
+      MODELO_IA: ${MODELO_IA}
+      CLAVE_API_IA: ${CLAVE_API_IA}
+    ports:
+      - "${PUERTO_BACKEND}:8000"
+    depends_on:
+      base_datos:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/salud')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_URL_API_BACKEND: ${NEXT_PUBLIC_URL_API_BACKEND}
+    container_name: agente-orientacion-frontend
+    environment:
+      URL_API_BACKEND: ${URL_API_BACKEND}
+      NEXT_PUBLIC_URL_API_BACKEND: ${NEXT_PUBLIC_URL_API_BACKEND}
+    ports:
+      - "${PUERTO_FRONTEND}:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  datos_postgresql:
+    name: agente-orientacion-datos-postgresql

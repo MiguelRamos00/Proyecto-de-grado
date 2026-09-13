@@ -2,7 +2,7 @@
 
 ## Objetivo
 
-El backend debe permitir que la lógica del MVP evolucione sin quedar acoplada a FastAPI, PostgreSQL, LangChain o RADIA. Se aplicará DDD de forma ligera: se modelan los conceptos necesarios del dominio sin introducir complejidad innecesaria para un proyecto de grado de dos estudiantes.
+El backend debe permitir que la lógica del MVP evolucione sin quedar acoplada a FastAPI, PostgreSQL, LangChain o RADIA. Se aplicará DDD de forma ligera: se modelan los conceptos necesarios del dominio sin introducir complejidad innecesaria para el proyecto.
 
 ## Dominios iniciales
 
