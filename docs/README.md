@@ -7,7 +7,7 @@ Esta carpeta centraliza la documentación técnica que guía la construcción de
 - `arquitectura/`: decisiones de diseño, visión del sistema, componentes y diagramas.
 - `arquitectura/decisiones/`: Architecture Decision Records (ADR).
 - `arquitectura/diagramas/`: fuentes editables de los diagramas C4.
-- `desarrollo/`: guías de configuración local, convenciones, pruebas y flujo de Git. Esta sección se completará en iteraciones posteriores.
+- `desarrollo/`: guías de configuración local, convenciones, pruebas y flujo de Git.
 
 ## Documentos de la iteración 1
 
@@ -20,6 +20,11 @@ Esta carpeta centraliza la documentación técnica que guía la construcción de
 7. [Integración con RADIA](arquitectura/07-integracion-radia.md).
 8. [ADR-001: Arquitectura C4 del agente IA](arquitectura/decisiones/ADR-001-Arquitectura-C4-Agente-IA.md).
 9. Diagramas C1 a C4 en `arquitectura/diagramas/`.
+10. [Despliegue local con Docker Compose](arquitectura/08-despliegue-local.md).
+11. [Configuración local](desarrollo/configuracion-local.md).
+12. [Flujo de Git y GitHub](desarrollo/flujo-de-git.md).
+13. [Convenciones de desarrollo](desarrollo/convenciones.md).
+14. [Estrategia de pruebas](desarrollo/estrategia-de-pruebas.md).
 
 ## Estado de validación
 
