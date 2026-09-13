@@ -1,0 +1,21 @@
+{
+  "name": "frontend-agente-orientacion",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "desarrollo": "next dev",
+    "compilar": "next build",
+    "iniciar": "next start"
+  },
+  "dependencies": {
+    "next": "^16.3.5",
+    "react": "19.1.2",
+    "react-dom": "19.1.2"
+  },
+  "devDependencies": {
+    "@types/node": "22.15.3",
+    "@types/react": "19.1.2",
+    "@types/react-dom": "19.1.2",
+    "typescript": "5.8.3"
+  }
+}
