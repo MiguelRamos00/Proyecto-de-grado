@@ -13,10 +13,11 @@ Esta carpeta centraliza la documentación técnica que guía la construcción de
 
 1. [Visión general](arquitectura/01-vision-general.md).
 2. [Backend con arquitectura hexagonal y DDD ligero](arquitectura/02-backend-hexagonal-ddd.md).
-3. [ADR-001: Arquitectura C4 del agente IA](arquitectura/decisiones/ADR-001-Arquitectura-C4-Agente-IA.md).
-4. Diagramas C1 a C4 en `arquitectura/diagramas/`.
+3. [Datos y PostgreSQL](arquitectura/05-datos-y-postgresql.md).
+4. [Contratos API](arquitectura/06-contratos-api.md).
+5. [ADR-001: Arquitectura C4 del agente IA](arquitectura/decisiones/ADR-001-Arquitectura-C4-Agente-IA.md).
+6. Diagramas C1 a C4 en `arquitectura/diagramas/`.
 
 ## Estado de validación
 
 Los documentos distinguen entre decisiones confirmadas, decisiones por validar con Solangie y dependencias externas de RADIA. No se debe interpretar una decisión pendiente como un compromiso definitivo de implementación.
-
