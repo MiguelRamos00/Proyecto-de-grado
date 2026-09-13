@@ -13,10 +13,13 @@ Esta carpeta centraliza la documentación técnica que guía la construcción de
 
 1. [Visión general](arquitectura/01-vision-general.md).
 2. [Backend con arquitectura hexagonal y DDD ligero](arquitectura/02-backend-hexagonal-ddd.md).
-3. [Datos y PostgreSQL](arquitectura/05-datos-y-postgresql.md).
-4. [Contratos API](arquitectura/06-contratos-api.md).
-5. [ADR-001: Arquitectura C4 del agente IA](arquitectura/decisiones/ADR-001-Arquitectura-C4-Agente-IA.md).
-6. Diagramas C1 a C4 en `arquitectura/diagramas/`.
+3. [Frontend con Next.js](arquitectura/03-frontend-nextjs.md).
+4. [Agente IA y proveedor configurable](arquitectura/04-agente-ia-y-proveedor.md).
+5. [Datos y PostgreSQL](arquitectura/05-datos-y-postgresql.md).
+6. [Contratos API](arquitectura/06-contratos-api.md).
+7. [Integración con RADIA](arquitectura/07-integracion-radia.md).
+8. [ADR-001: Arquitectura C4 del agente IA](arquitectura/decisiones/ADR-001-Arquitectura-C4-Agente-IA.md).
+9. Diagramas C1 a C4 en `arquitectura/diagramas/`.
 
 ## Estado de validación
 
