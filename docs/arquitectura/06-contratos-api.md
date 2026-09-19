@@ -19,7 +19,7 @@ El frontend construido con Next.js consumirá el contrato OpenAPI y validará su
 | Método | Ruta | Propósito |
 |---|---|---|
 | `GET` | `/api/v1/salud` | Verificar disponibilidad del backend. |
-| `GET` | `/api/v1/instrumentos/diagnostico-activo` | Consultar el instrumento publicado para el MVP. |
+| `GET` | `/api/v1/diagnosticos/instrumento-activo` | Consultar el instrumento publicado para el MVP. |
 | `POST` | `/api/v1/diagnosticos` | Registrar respuestas válidas y generar el resultado orientativo. |
 | `GET` | `/api/v1/diagnosticos/{resultado_id}` | Consultar un resultado previamente generado. |
 | `POST` | `/api/v1/conversaciones/mensajes` | Enviar una consulta al agente dentro del contexto permitido. |
