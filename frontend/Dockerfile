@@ -5,6 +5,11 @@ WORKDIR /aplicacion
 COPY package.json package-lock.json ./
 RUN npm ci
 
+FROM dependencias AS pruebas
+
+COPY . .
+RUN npm run pruebas
+
 FROM node:22-alpine AS compilacion
 
 WORKDIR /aplicacion
