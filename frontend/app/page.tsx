@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 type EstadoServicio = "sin_verificar" | "verificando" | "disponible" | "no_disponible";
 
@@ -34,6 +35,7 @@ export default function Inicio() {
         <h1>Agente de orientación</h1>
         <p>Base técnica del MVP para apoyar el fortalecimiento de competencias técnicas y actitudinales.</p>
         <p className="aviso">Las recomendaciones del futuro agente serán orientativas y no reemplazarán acompañamiento profesional.</p>
+        <p><Link className="enlace-principal" href="/diagnostico">Iniciar diagnóstico simulado</Link></p>
         <button type="button" onClick={verificarBackend} disabled={estado === "verificando"}>
           {estado === "verificando" ? "Verificando" : "Verificar backend"}
         </button>
