@@ -25,6 +25,7 @@ Esta carpeta centraliza la documentación técnica que guía la construcción de
 12. [Flujo de Git y GitHub](desarrollo/flujo-de-git.md).
 13. [Convenciones de desarrollo](desarrollo/convenciones.md).
 14. [Estrategia de pruebas](desarrollo/estrategia-de-pruebas.md).
+15. [Iteración 2: diagnóstico inicial](desarrollo/iteracion-2-diagnostico-inicial.md).
 
 ## Estado de validación
 
