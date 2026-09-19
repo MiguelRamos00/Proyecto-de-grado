@@ -20,8 +20,7 @@ El frontend construido con Next.js consumirá el contrato OpenAPI y validará su
 |---|---|---|
 | `GET` | `/api/v1/salud` | Verificar disponibilidad del backend. |
 | `GET` | `/api/v1/diagnosticos/instrumento-activo` | Consultar el instrumento publicado para el MVP. |
-| `POST` | `/api/v1/diagnosticos` | Registrar respuestas válidas y generar el resultado orientativo. |
-| `GET` | `/api/v1/diagnosticos/{resultado_id}` | Consultar un resultado previamente generado. |
+| `POST` | `/api/v1/diagnosticos` | Registrar respuestas válidas del instrumento activo. |
 | `POST` | `/api/v1/conversaciones/mensajes` | Enviar una consulta al agente dentro del contexto permitido. |
 | `GET` | `/api/v1/recursos` | Consultar recursos o rutas formativas, con filtros opcionales. |
 
@@ -33,11 +32,10 @@ Solicitud:
 
 ```json
 {
-  "instrumento_id": "diag-competencias-v1",
-  "sesion_id": "5d54f6d2-8f5c-4dc5-982a-6bd8bbd61e5a",
+  "instrumento_id": "diagnostico-inicial-v1",
   "respuestas": [
     {
-      "pregunta_id": "pregunta-01",
+      "pregunta_id": "TEC-001",
       "valor": 4
     }
   ]
@@ -48,14 +46,14 @@ Respuesta:
 
 ```json
 {
-  "resultado_id": "1e22062b-559e-441f-b3c2-394a06ec8b15",
-  "instrumento_id": "diag-competencias-v1",
-  "fortalezas": ["Resolución de problemas"],
-  "oportunidades_de_mejora": ["Fundamentos de datos"],
-  "mensaje_orientativo": "El resultado es una guía inicial para apoyar tu proceso formativo.",
-  "recursos_recomendados": []
+  "diagnostico_id": "1e22062b-559e-441f-b3c2-394a06ec8b15",
+  "instrumento_id": "diagnostico-inicial-v1",
+  "estado": "registrado",
+  "fecha_creacion": "2026-09-19T01:56:46.345316Z"
 }
 ```
+
+En esta iteración el backend solo registra las respuestas válidas. El cálculo de perfiles, resultados orientativos y recomendaciones se implementará en una iteración posterior.
 
 ## Ejemplo: interacción conversacional
 

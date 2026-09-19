@@ -26,6 +26,7 @@ Esta carpeta centraliza la documentación técnica que guía la construcción de
 13. [Convenciones de desarrollo](desarrollo/convenciones.md).
 14. [Estrategia de pruebas](desarrollo/estrategia-de-pruebas.md).
 15. [Iteración 2: diagnóstico inicial](desarrollo/iteracion-2-diagnostico-inicial.md).
+16. [Iteración 3: interfaz de diagnóstico](desarrollo/iteracion-3-interfaz-diagnostico.md).
 
 ## Estado de validación
 
