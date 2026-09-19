@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.adaptadores.http.diagnosticos import enrutador as enrutador_diagnosticos
 
 aplicacion = FastAPI(
     title="API del agente de orientación",
@@ -12,9 +13,11 @@ aplicacion.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000"],
     allow_credentials=False,
-    allow_methods=["GET"],
-    allow_headers=[],
+    allow_methods=["GET", "POST"],
+    allow_headers=["Content-Type"],
 )
+
+aplicacion.include_router(enrutador_diagnosticos)
 
 
 @aplicacion.get("/api/v1/salud", tags=["salud"])
