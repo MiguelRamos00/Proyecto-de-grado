@@ -1,6 +1,6 @@
 import { esquemaInstrumentoActivo } from "@/esquemas/diagnostico";
 import { FormularioDiagnostico } from "@/modulos/diagnostico/formulario-diagnostico";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 const instrumentoActivo = {
@@ -26,6 +26,7 @@ function respuestaJson(cuerpo: unknown, estado = 200) {
 
 describe("contratos e interfaz de diagnóstico", () => {
   afterEach(() => {
+    cleanup();
     vi.unstubAllGlobals();
   });
 
@@ -38,7 +39,7 @@ describe("contratos e interfaz de diagnóstico", () => {
 
     render(<FormularioDiagnostico />);
 
-    expect(await screen.findByText("Pregunta técnica 1")).toBeTruthy();
+    expect(await screen.findByRole("group", { name: /Pregunta técnica 1/ })).toBeTruthy();
     expect(screen.getAllByRole("radio")).toHaveLength(30);
   });
 
@@ -47,7 +48,7 @@ describe("contratos e interfaz de diagnóstico", () => {
     vi.stubGlobal("fetch", fetchSimulado);
     render(<FormularioDiagnostico />);
 
-    await screen.findByText("Pregunta técnica 1");
+    await screen.findByRole("group", { name: /Pregunta técnica 1/ });
     fireEvent.click(screen.getByRole("button", { name: "Registrar diagnóstico" }));
 
     expect(await screen.findByText(/Responde todas las preguntas/)).toBeTruthy();
@@ -67,7 +68,7 @@ describe("contratos e interfaz de diagnóstico", () => {
     vi.stubGlobal("fetch", fetchSimulado);
     render(<FormularioDiagnostico />);
 
-    await screen.findByText("Pregunta técnica 1");
+    await screen.findByRole("group", { name: /Pregunta técnica 1/ });
     screen.getAllByRole("radio", { name: "3 Moderadamente segura" }).forEach((opcion) => fireEvent.click(opcion));
     fireEvent.click(screen.getByRole("button", { name: "Registrar diagnóstico" }));
 
