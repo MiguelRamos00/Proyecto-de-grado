@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.adaptadores.http.conversaciones import enrutador as enrutador_conversaciones
 from app.adaptadores.http.diagnosticos import enrutador as enrutador_diagnosticos
 
 aplicacion = FastAPI(
@@ -18,6 +19,7 @@ aplicacion.add_middleware(
 )
 
 aplicacion.include_router(enrutador_diagnosticos)
+aplicacion.include_router(enrutador_conversaciones)
 
 
 @aplicacion.get("/api/v1/salud", tags=["salud"])

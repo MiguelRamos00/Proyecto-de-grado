@@ -28,6 +28,8 @@ services:
       PROVEEDOR_IA: ${PROVEEDOR_IA}
       MODELO_IA: ${MODELO_IA}
       CLAVE_API_IA: ${CLAVE_API_IA}
+      URL_BASE_IA: ${URL_BASE_IA:-}
+      TEMPERATURA_IA: ${TEMPERATURA_IA:-0.2}
     ports:
       - "${PUERTO_BACKEND}:8000"
     depends_on:
