@@ -1,5 +1,12 @@
-from sqlalchemy.orm import Session
+from uuid import UUID
 
+from sqlalchemy import select
+from sqlalchemy.orm import Session, selectinload
+
+from app.aplicacion.diagnostico.consultar_resultado_orientativo import (
+    DiagnosticoConRespuestas,
+    RespuestaDiagnosticoRegistrada,
+)
 from app.aplicacion.diagnostico.registrar_diagnostico import (
     DiagnosticoRegistrado,
     SolicitudRegistroDiagnostico,
@@ -35,4 +42,28 @@ class RepositorioDiagnosticosSqlAlchemy:
             instrumento_id=diagnostico.instrumento_id,
             estado=diagnostico.estado,
             fecha_creacion=diagnostico.fecha_creacion,
+        )
+
+    def obtener_por_id(self, diagnostico_id: UUID) -> DiagnosticoConRespuestas | None:
+        """Recupera un diagnóstico con sus respuestas sin exponer entidades ORM."""
+        consulta = (
+            select(Diagnostico)
+            .options(selectinload(Diagnostico.respuestas))
+            .where(Diagnostico.id == diagnostico_id)
+        )
+        diagnostico = self._sesion.scalar(consulta)
+        if diagnostico is None:
+            return None
+
+        return DiagnosticoConRespuestas(
+            id=diagnostico.id,
+            instrumento_id=diagnostico.instrumento_id,
+            estado=diagnostico.estado,
+            respuestas=tuple(
+                RespuestaDiagnosticoRegistrada(
+                    pregunta_id=respuesta.pregunta_id,
+                    valor=respuesta.valor,
+                )
+                for respuesta in diagnostico.respuestas
+            ),
         )
