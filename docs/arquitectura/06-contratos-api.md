@@ -22,7 +22,7 @@ El frontend construido con Next.js consumirá el contrato OpenAPI y validará su
 | `GET` | `/api/v1/diagnosticos/instrumento-activo` | Consultar el instrumento publicado para el MVP. |
 | `POST` | `/api/v1/diagnosticos` | Registrar respuestas válidas del instrumento activo. |
 | `GET` | `/api/v1/diagnosticos/{diagnostico_id}/resultado-orientativo` | Consultar una devolución simulada calculada por el backend. |
-| `POST` | `/api/v1/conversaciones/mensajes` | Enviar una consulta al agente dentro del contexto permitido. |
+| `POST` | `/api/v1/conversaciones` | Enviar una consulta al agente dentro del contexto permitido. |
 | `GET` | `/api/v1/recursos` | Consultar recursos o rutas formativas, con filtros opcionales. |
 
 Las rutas de integración con RADIA no se publicarán como definitivas hasta recibir su contrato oficial.
