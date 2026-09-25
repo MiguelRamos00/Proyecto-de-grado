@@ -1,9 +1,15 @@
 import {
   esquemaDiagnosticoCreado,
   esquemaInstrumentoActivo,
+  esquemaResultadoOrientativo,
   esquemaSolicitudCrearDiagnostico,
 } from "@/esquemas/diagnostico";
-import type { DiagnosticoCreado, InstrumentoActivo, SolicitudCrearDiagnostico } from "@/tipos/diagnostico";
+import type {
+  DiagnosticoCreado,
+  InstrumentoActivo,
+  ResultadoOrientativo,
+  SolicitudCrearDiagnostico,
+} from "@/tipos/diagnostico";
 
 import { solicitarJson } from "./cliente-api";
 
@@ -19,4 +25,13 @@ export function registrarDiagnostico(solicitud: SolicitudCrearDiagnostico): Prom
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(solicitudValidada),
   });
+}
+
+export function consultarResultadoOrientativo(
+  diagnosticoId: string,
+): Promise<ResultadoOrientativo> {
+  return solicitarJson(
+    `/api/v1/diagnosticos/${diagnosticoId}/resultado-orientativo`,
+    esquemaResultadoOrientativo,
+  );
 }

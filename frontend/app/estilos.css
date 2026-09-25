@@ -24,4 +24,11 @@ button:disabled { cursor: wait; opacity: 0.7; }
 .opcion-escala small { font-size: 0.72rem; }
 .mensaje-error { color: #a31b1b; font-weight: 700; }
 .mensaje-registrado { color: #087443; font-weight: 700; }
+.tarjeta-resultado { width: min(100%, 58rem); }
+.grupo-resultado { width: 100%; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid #d6dbea; border-radius: 0.75rem; box-shadow: none; }
+.grupo-resultado h2 { margin-top: 0; font-size: 1.25rem; }
+.lista-competencias { display: grid; gap: 1rem; margin: 0; padding: 0; list-style: none; }
+.lista-competencias li { border-left: 4px solid #4258a8; padding: 0.25rem 0 0.25rem 1rem; }
+.lista-competencias h3 { margin: 0; font-size: 1rem; }
+.lista-competencias p { margin: 0.45rem 0 0; }
 @media (max-width: 34rem) { section { padding: 1.5rem; } .opciones-escala { grid-template-columns: 1fr; } .opcion-escala { grid-template-columns: auto auto 1fr; justify-content: start; gap: 0.5rem; min-height: auto; text-align: left; } }

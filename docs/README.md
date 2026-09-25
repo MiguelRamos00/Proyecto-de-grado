@@ -27,6 +27,7 @@ Esta carpeta centraliza la documentación técnica que guía la construcción de
 14. [Estrategia de pruebas](desarrollo/estrategia-de-pruebas.md).
 15. [Iteración 2: diagnóstico inicial](desarrollo/iteracion-2-diagnostico-inicial.md).
 16. [Iteración 3: interfaz de diagnóstico](desarrollo/iteracion-3-interfaz-diagnostico.md).
+17. [Iteración 4: resultado orientativo](desarrollo/iteracion-4-resultado-orientativo.md).
 
 ## Estado de validación
 
