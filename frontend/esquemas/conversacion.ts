@@ -1,0 +1,20 @@
+import { z } from "zod";
+
+export const esquemaSolicitudConversacion = z.object({
+  sesion_id: z.string().uuid(),
+  mensaje: z.string().trim().min(1).max(1000),
+  diagnostico_id: z.string().uuid().optional(),
+});
+
+export const esquemaRecursoConversacion = z.object({
+  titulo: z.string().min(1),
+  descripcion: z.string().min(1),
+  enlace: z.string().url().nullable(),
+});
+
+export const esquemaRespuestaConversacion = z.object({
+  respuesta: z.string().min(1),
+  recursos: z.array(esquemaRecursoConversacion),
+  aviso_alcance: z.string().min(1),
+  proveedor_modelo: z.string().min(1),
+});

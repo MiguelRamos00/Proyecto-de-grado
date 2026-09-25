@@ -36,6 +36,7 @@ export default function Inicio() {
         <p>Base técnica del MVP para apoyar el fortalecimiento de competencias técnicas y actitudinales.</p>
         <p className="aviso">Las recomendaciones del futuro agente serán orientativas y no reemplazarán acompañamiento profesional.</p>
         <p><Link className="enlace-principal" href="/diagnostico">Iniciar diagnóstico simulado</Link></p>
+        <p><Link href="/chat">Abrir chat orientativo</Link></p>
         <button type="button" onClick={verificarBackend} disabled={estado === "verificando"}>
           {estado === "verificando" ? "Verificando" : "Verificar backend"}
         </button>
