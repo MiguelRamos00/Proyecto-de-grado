@@ -21,6 +21,7 @@ El frontend construido con Next.js consumirá el contrato OpenAPI y validará su
 | `GET` | `/api/v1/salud` | Verificar disponibilidad del backend. |
 | `GET` | `/api/v1/diagnosticos/instrumento-activo` | Consultar el instrumento publicado para el MVP. |
 | `POST` | `/api/v1/diagnosticos` | Registrar respuestas válidas del instrumento activo. |
+| `GET` | `/api/v1/diagnosticos/{diagnostico_id}/resultado-orientativo` | Consultar una devolución simulada calculada por el backend. |
 | `POST` | `/api/v1/conversaciones/mensajes` | Enviar una consulta al agente dentro del contexto permitido. |
 | `GET` | `/api/v1/recursos` | Consultar recursos o rutas formativas, con filtros opcionales. |
 
@@ -53,7 +54,30 @@ Respuesta:
 }
 ```
 
-En esta iteración el backend solo registra las respuestas válidas. El cálculo de perfiles, resultados orientativos y recomendaciones se implementará en una iteración posterior.
+El resultado orientativo aplica un cálculo determinista en el backend: presenta puntajes 4 y 5 como fortalezas y puntajes de 1 a 3 como oportunidades de fortalecimiento. Cada competencia incluye un recurso simulado. Este resultado no tiene carácter de evaluación académica o psicológica y no usa IA generativa, datos reales de estudiantes ni contratos reales de RADIA.
+
+## Ejemplo: resultado orientativo
+
+Respuesta:
+
+```json
+{
+  "diagnostico_id": "1e22062b-559e-441f-b3c2-394a06ec8b15",
+  "instrumento_id": "diagnostico-inicial-v1",
+  "fortalezas": [
+    {
+      "pregunta_id": "TEC-001",
+      "nombre": "Resolución de problemas de programación",
+      "categoria": "tecnica",
+      "puntaje": 4,
+      "clasificacion": "fortaleza",
+      "recurso_simulado": "Guía simulada: descomposición de problemas de programación."
+    }
+  ],
+  "oportunidades": [],
+  "aviso": "Resultado orientativo generado con reglas simuladas del MVP."
+}
+```
 
 ## Ejemplo: interacción conversacional
 

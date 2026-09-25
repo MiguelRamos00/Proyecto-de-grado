@@ -28,6 +28,7 @@ export function FormularioDiagnostico() {
   const [estadoInstrumento, establecerEstadoInstrumento] = useState<EstadoInstrumento>("cargando");
   const [estadoEnvio, establecerEstadoEnvio] = useState<EstadoEnvio>("sin_enviar");
   const [mensaje, establecerMensaje] = useState("");
+  const [diagnosticoId, establecerDiagnosticoId] = useState<string | null>(null);
 
   async function cargarInstrumento() {
     establecerEstadoInstrumento("cargando");
@@ -77,9 +78,10 @@ export function FormularioDiagnostico() {
     establecerMensaje("");
 
     try {
-      await registrarDiagnostico(validacion.data);
+      const diagnosticoCreado = await registrarDiagnostico(validacion.data);
+      establecerDiagnosticoId(diagnosticoCreado.diagnostico_id);
       establecerEstadoEnvio("registrado");
-      establecerMensaje("El diagnóstico fue registrado. Las recomendaciones se habilitarán en una iteración posterior del MVP.");
+      establecerMensaje("El diagnóstico fue registrado. Ya puedes consultar tu resultado orientativo.");
     } catch (error) {
       establecerEstadoEnvio("error");
       establecerMensaje(error instanceof ErrorApi ? error.message : "No fue posible registrar el diagnóstico.");
@@ -144,6 +146,13 @@ export function FormularioDiagnostico() {
         <button type="submit" disabled={estadoEnvio === "enviando" || estadoEnvio === "registrado"}>
           {estadoEnvio === "enviando" ? "Registrando" : "Registrar diagnóstico"}
         </button>
+        {diagnosticoId && (
+          <p>
+            <Link className="enlace-principal" href={`/resultado?diagnostico_id=${diagnosticoId}`}>
+              Ver resultado orientativo
+            </Link>
+          </p>
+        )}
       </form>
       <p><Link href="/">Volver al inicio</Link></p>
     </section>

@@ -74,3 +74,24 @@ class DiagnosticoCreadoRespuesta(BaseModel):
     instrumento_id: str
     estado: str
     fecha_creacion: datetime
+
+
+class CompetenciaOrientativaRespuesta(BaseModel):
+    """Competencia presentada en la devolución orientativa simulada."""
+
+    pregunta_id: str
+    nombre: str
+    categoria: str
+    puntaje: int = Field(ge=1, le=5)
+    clasificacion: str
+    recurso_simulado: str
+
+
+class ResultadoOrientativoRespuesta(BaseModel):
+    """Contrato de salida para una devolución sin IA generativa."""
+
+    diagnostico_id: UUID
+    instrumento_id: str
+    fortalezas: list[CompetenciaOrientativaRespuesta]
+    oportunidades: list[CompetenciaOrientativaRespuesta]
+    aviso: str
