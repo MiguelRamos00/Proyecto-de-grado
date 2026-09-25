@@ -53,7 +53,7 @@ Respuesta:
 }
 ```
 
-En esta iteración el backend solo registra las respuestas válidas. El cálculo de perfiles, resultados orientativos y recomendaciones se implementará en una iteración posterior.
+En esta iteración el backend solo registra las respuestas válidas. La siguiente extensión será el resultado orientativo: un cálculo determinista en el backend que presentará puntajes 4 y 5 como fortalezas y puntajes de 1 a 3 como oportunidades de fortalecimiento. Cada competencia incluirá un recurso simulado. Este resultado no tendrá carácter de evaluación académica o psicológica y no usará IA generativa, datos reales de estudiantes ni contratos reales de RADIA.
 
 ## Ejemplo: interacción conversacional
 
