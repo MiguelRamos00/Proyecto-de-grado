@@ -2,7 +2,7 @@
 
 from uuid import UUID
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 class SolicitudConversacionEntrada(BaseModel):
@@ -11,6 +11,15 @@ class SolicitudConversacionEntrada(BaseModel):
     sesion_id: UUID
     mensaje: str = Field(min_length=1, max_length=1000)
     diagnostico_id: UUID | None = None
+
+    @field_validator("mensaje")
+    @classmethod
+    def validar_mensaje_con_contenido(cls, mensaje: str) -> str:
+        """Evita que una cadena formada solo por espacios llegue al proveedor."""
+        mensaje_limpio = mensaje.strip()
+        if not mensaje_limpio:
+            raise ValueError("El mensaje debe incluir contenido.")
+        return mensaje_limpio
 
 
 class RecursoConversacionRespuesta(BaseModel):
