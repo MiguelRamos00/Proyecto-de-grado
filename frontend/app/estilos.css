@@ -31,4 +31,12 @@ button:disabled { cursor: wait; opacity: 0.7; }
 .lista-competencias li { border-left: 4px solid #4258a8; padding: 0.25rem 0 0.25rem 1rem; }
 .lista-competencias h3 { margin: 0; font-size: 1rem; }
 .lista-competencias p { margin: 0.45rem 0 0; }
+.tarjeta-chat { width: min(100%, 52rem); }
+.formulario-chat { display: grid; gap: 0.8rem; }
+.formulario-chat label { font-weight: 700; }
+.formulario-chat textarea { width: 100%; resize: vertical; border: 1px solid #b9c2dc; border-radius: 0.5rem; padding: 0.75rem; color: #182338; font: inherit; }
+.respuesta-chat { margin-top: 1.5rem; border: 1px solid #d6dbea; border-radius: 0.75rem; padding: 1.25rem; }
+.respuesta-chat h2, .respuesta-chat h3 { margin-top: 0; }
+.lista-recursos-chat { display: grid; gap: 0.75rem; margin: 0; padding-left: 1.25rem; }
+.lista-recursos-chat p { margin: 0.35rem 0; }
 @media (max-width: 34rem) { section { padding: 1.5rem; } .opciones-escala { grid-template-columns: 1fr; } .opcion-escala { grid-template-columns: auto auto 1fr; justify-content: start; gap: 0.5rem; min-height: auto; text-align: left; } }

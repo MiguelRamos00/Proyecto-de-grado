@@ -34,7 +34,7 @@ export async function solicitarJson<T>(
 
   if (!respuesta.ok) {
     if (respuesta.status === 422) {
-      throw new ErrorApi("Las respuestas enviadas no cumplen con el instrumento activo.", respuesta.status);
+      throw new ErrorApi("La solicitud enviada no cumple con las validaciones requeridas.", respuesta.status);
     }
 
     throw new ErrorApi("No fue posible completar la solicitud. Intenta nuevamente.", respuesta.status);

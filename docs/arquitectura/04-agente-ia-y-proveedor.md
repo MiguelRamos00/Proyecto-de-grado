@@ -17,6 +17,8 @@ Puerto de agente conversacional
         ▼
 Adaptador LangChain
         │
+        ├── Simulado
+        ├── Gemini
         ├── OpenAI API
         └── OpenRouter
 ```
@@ -34,6 +36,8 @@ La configuración se inyectará mediante variables de entorno y nunca se version
 | `TEMPERATURA_IA` | Parámetro de generación sujeto a pruebas. |
 
 La selección definitiva del proveedor y modelo permanece pendiente de disponibilidad, costo, calidad observada y validación académica.
+
+Durante el desarrollo y las pruebas, `simulado` es el proveedor predeterminado. No requiere credenciales ni establece comunicación externa. Los proveedores `gemini`, `openai` y `openrouter` se habilitan solo cuando se seleccionan explícitamente con sus variables de entorno.
 
 ## Contexto permitido
 

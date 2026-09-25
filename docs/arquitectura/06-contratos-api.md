@@ -22,7 +22,7 @@ El frontend construido con Next.js consumirá el contrato OpenAPI y validará su
 | `GET` | `/api/v1/diagnosticos/instrumento-activo` | Consultar el instrumento publicado para el MVP. |
 | `POST` | `/api/v1/diagnosticos` | Registrar respuestas válidas del instrumento activo. |
 | `GET` | `/api/v1/diagnosticos/{diagnostico_id}/resultado-orientativo` | Consultar una devolución simulada calculada por el backend. |
-| `POST` | `/api/v1/conversaciones/mensajes` | Enviar una consulta al agente dentro del contexto permitido. |
+| `POST` | `/api/v1/conversaciones` | Enviar una consulta al agente dentro del contexto permitido. |
 | `GET` | `/api/v1/recursos` | Consultar recursos o rutas formativas, con filtros opcionales. |
 
 Las rutas de integración con RADIA no se publicarán como definitivas hasta recibir su contrato oficial.
@@ -87,7 +87,7 @@ Solicitud:
 {
   "sesion_id": "5d54f6d2-8f5c-4dc5-982a-6bd8bbd61e5a",
   "mensaje": "¿Qué recurso puedo revisar para fortalecer mis fundamentos de datos?",
-  "contexto_diagnostico_id": "1e22062b-559e-441f-b3c2-394a06ec8b15"
+  "diagnostico_id": "1e22062b-559e-441f-b3c2-394a06ec8b15"
 }
 ```
 
@@ -96,13 +96,13 @@ Respuesta:
 ```json
 {
   "respuesta": "Puedes iniciar con los recursos recomendados para fundamentos de datos.",
-  "recursos_referenciados": [],
-  "advertencias": [],
-  "proveedor_modelo": "configurable"
+  "recursos": [],
+  "aviso_alcance": "Esta conversación ofrece orientación general para el aprendizaje.",
+  "proveedor_modelo": "simulado"
 }
 ```
 
-La respuesta del agente se validará como estructura JSON antes de entregarse al frontend. Si el proveedor no produce una estructura válida o una respuesta está fuera del alcance definido, el backend devolverá una respuesta segura y registrará el evento técnico sin incluir información sensible.
+La respuesta del agente se valida como estructura JSON antes de entregarse al frontend. El proveedor predeterminado es simulado, por lo que las pruebas no requieren claves ni servicios externos. Si un proveedor configurable no produce una respuesta válida o una respuesta está fuera del alcance definido, el backend devolverá una respuesta segura y registrará el evento técnico sin incluir información sensible.
 
 ## Formato de error
 
