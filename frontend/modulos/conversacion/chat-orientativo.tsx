@@ -9,7 +9,7 @@ import { FormEvent, useState } from "react";
 
 type EstadoEnvio = "inactivo" | "enviando" | "error";
 
-export function ChatOrientativo() {
+export function ChatOrientativo({ diagnosticoId }: { diagnosticoId?: string }) {
   const [sesionId] = useState(() => crypto.randomUUID());
   const [mensaje, establecerMensaje] = useState("");
   const [respuesta, establecerRespuesta] = useState<RespuestaConversacion | null>(null);
@@ -21,6 +21,7 @@ export function ChatOrientativo() {
     const validacion = esquemaSolicitudConversacion.safeParse({
       sesion_id: sesionId,
       mensaje,
+      ...(diagnosticoId ? { diagnostico_id: diagnosticoId } : {}),
     });
 
     if (!validacion.success) {

@@ -52,18 +52,18 @@ No debe recibir información sensible innecesaria, credenciales, contratos no va
 
 ## Respuesta estructurada
 
-El adaptador solicitará una salida JSON que el backend valida con Pydantic antes de responder al frontend. La estructura inicial incluye:
+El backend entrega al frontend una respuesta JSON validada con Pydantic. En esta etapa, LangChain solicita texto orientativo al modelo y el backend lo encapsula en el contrato HTTP:
 
 ```json
 {
   "respuesta": "Texto orientativo en español.",
-  "recursos_referenciados": [],
-  "advertencias": [],
-  "requiere_revision": false
+  "recursos": [],
+  "aviso_alcance": "Orientación general de aprendizaje.",
+  "proveedor_modelo": "gemini"
 }
 ```
 
-Si el proveedor devuelve texto no estructurado, una respuesta fuera de alcance o una salida inválida, el backend aplicará una respuesta segura. El incidente se registrará técnicamente sin almacenar contenido sensible innecesario.
+Si el proveedor no responde, el backend devuelve un error controlado sin exponer claves, mensajes ni detalles internos. La estructuración avanzada de respuestas del modelo y su evaluación de seguridad se incorporarán en una iteración posterior.
 
 ## Límites y validación
 

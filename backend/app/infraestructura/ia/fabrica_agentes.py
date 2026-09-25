@@ -4,11 +4,8 @@ import os
 
 from app.infraestructura.ia.agente_langchain import AgenteConversacionalLangChain
 from app.infraestructura.ia.agente_simulado import AgenteConversacionalSimulado
+from app.infraestructura.ia.errores import ConfiguracionProveedorInvalidaError
 from app.puertos.agente_conversacional import AgenteConversacional
-
-
-class ConfiguracionProveedorInvalidaError(ValueError):
-    """Indica que faltan datos para inicializar un proveedor externo."""
 
 
 def obtener_proveedor_activo() -> str:
@@ -29,7 +26,12 @@ def crear_agente_conversacional() -> AgenteConversacional:
             "El proveedor configurado requiere CLAVE_API_IA y MODELO_IA."
         )
 
-    temperatura = float(os.getenv("TEMPERATURA_IA", "0.2"))
+    try:
+        temperatura = float(os.getenv("TEMPERATURA_IA", "0.2"))
+    except ValueError as error:
+        raise ConfiguracionProveedorInvalidaError(
+            "TEMPERATURA_IA debe ser un valor numérico."
+        ) from error
     if proveedor == "gemini":
         from langchain_google_genai import ChatGoogleGenerativeAI
 
@@ -37,6 +39,7 @@ def crear_agente_conversacional() -> AgenteConversacional:
             model=modelo,
             google_api_key=clave_api,
             temperature=temperatura,
+            max_retries=0,
         )
         return AgenteConversacionalLangChain(cliente, proveedor)
 
@@ -51,6 +54,7 @@ def crear_agente_conversacional() -> AgenteConversacional:
             api_key=clave_api,
             base_url=url_base or None,
             temperature=temperatura,
+            max_retries=0,
         )
         return AgenteConversacionalLangChain(cliente, proveedor)
 

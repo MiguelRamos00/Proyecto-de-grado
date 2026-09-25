@@ -17,6 +17,7 @@ class SolicitudConversacion:
     sesion_id: UUID
     mensaje: str
     diagnostico_id: UUID | None = None
+    contexto_diagnostico: str | None = None
 
 
 @dataclass(frozen=True)

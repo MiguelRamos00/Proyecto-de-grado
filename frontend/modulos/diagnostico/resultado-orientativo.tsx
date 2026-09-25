@@ -97,6 +97,11 @@ export function ResultadoOrientativoDiagnostico({ diagnosticoId }: { diagnostico
         />
       </section>
 
+      <p>
+        <Link className="enlace-principal" href={`/chat?diagnostico_id=${diagnosticoId}`}>
+          Consultar orientación en el chat
+        </Link>
+      </p>
       <p><Link href="/diagnostico">Realizar otro diagnóstico</Link></p>
     </section>
   );
