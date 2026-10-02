@@ -1,0 +1,417 @@
+openapi: 3.1.0
+info:
+  title: API del agente de orientación
+  version: 0.1.0
+  description: |
+    Especificación de los endpoints implementados en el MVP del agente
+    conversacional del proyecto RADIA.
+
+    El diagnóstico utiliza un instrumento simulado. Sus resultados son
+    orientativos y no constituyen una evaluación académica, psicológica o
+    profesional. La integración con RADIA no hace parte de esta versión del
+    contrato, pues depende de acuerdos y contratos externos pendientes.
+  contact:
+    name: Proyecto de Grado - Universidad Católica de Colombia
+
+servers:
+  - url: http://localhost:8000
+    description: Entorno local mediante Docker Compose
+
+tags:
+  - name: salud
+    description: Disponibilidad del backend.
+  - name: diagnosticos
+    description: Instrumento y resultados orientativos del diagnóstico inicial.
+  - name: conversaciones
+    description: Orientación conversacional generada por el proveedor de IA configurado.
+
+paths:
+  /api/v1/salud:
+    get:
+      tags: [salud]
+      summary: Consultar disponibilidad del backend
+      operationId: consultarSalud
+      responses:
+        '200':
+          description: Backend disponible para recibir solicitudes.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaSalud'
+              example:
+                estado: disponible
+
+  /api/v1/diagnosticos/instrumento-activo:
+    get:
+      tags: [diagnosticos]
+      summary: Consultar instrumento de diagnóstico activo
+      operationId: consultarInstrumentoActivo
+      responses:
+        '200':
+          description: Instrumento simulado publicado en el MVP.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstrumentoActivoRespuesta'
+
+  /api/v1/diagnosticos:
+    post:
+      tags: [diagnosticos]
+      summary: Registrar un diagnóstico inicial
+      description: |
+        Registra una respuesta para cada pregunta del instrumento activo.
+        El MVP exige respuestas completas, sin preguntas repetidas y con valores
+        enteros entre 1 y 5.
+      operationId: crearDiagnostico
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SolicitudCrearDiagnostico'
+            example:
+              instrumento_id: diagnostico-inicial-v1
+              respuestas:
+                - pregunta_id: TEC-001
+                  valor: 4
+                - pregunta_id: TEC-002
+                  valor: 3
+                - pregunta_id: TEC-003
+                  valor: 4
+                - pregunta_id: ACT-001
+                  valor: 5
+                - pregunta_id: ACT-002
+                  valor: 4
+                - pregunta_id: ACT-003
+                  valor: 3
+      responses:
+        '201':
+          description: Diagnóstico registrado correctamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiagnosticoCreadoRespuesta'
+        '422':
+          $ref: '#/components/responses/ErrorValidacion'
+
+  /api/v1/diagnosticos/{diagnostico_id}/resultado-orientativo:
+    get:
+      tags: [diagnosticos]
+      summary: Consultar resultado orientativo del diagnóstico
+      description: |
+        Clasifica respuestas con valor 4 o 5 como fortalezas y valores entre
+        1 y 3 como oportunidades de fortalecimiento. Este cálculo es
+        determinista y no usa IA generativa.
+      operationId: consultarResultadoOrientativo
+      parameters:
+        - $ref: '#/components/parameters/DiagnosticoId'
+      responses:
+        '200':
+          description: Resultado orientativo calculado para el diagnóstico.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultadoOrientativoRespuesta'
+        '404':
+          $ref: '#/components/responses/DiagnosticoNoEncontrado'
+        '422':
+          $ref: '#/components/responses/ErrorValidacion'
+
+  /api/v1/conversaciones:
+    post:
+      tags: [conversaciones]
+      summary: Enviar una consulta al agente conversacional
+      description: |
+        Envía un mensaje al proveedor de IA configurado. Puede incluir el
+        identificador de un diagnóstico para proporcionar al agente solo el
+        contexto orientativo mínimo. Las conversaciones no se persisten en
+        esta versión del MVP.
+      operationId: crearConversacion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SolicitudConversacionEntrada'
+            example:
+              sesion_id: 5d54f6d2-8f5c-4dc5-982a-6bd8bbd61e5a
+              mensaje: ¿Qué recurso puedo revisar para fortalecer mis fundamentos de datos?
+              diagnostico_id: 1e22062b-559e-441f-b3c2-394a06ec8b15
+      responses:
+        '200':
+          description: Orientación generada correctamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaConversacionSalida'
+        '404':
+          $ref: '#/components/responses/DiagnosticoNoEncontrado'
+        '422':
+          $ref: '#/components/responses/ErrorValidacion'
+        '503':
+          $ref: '#/components/responses/ProveedorNoDisponible'
+
+components:
+  parameters:
+    DiagnosticoId:
+      name: diagnostico_id
+      in: path
+      required: true
+      description: Identificador UUID del diagnóstico registrado.
+      schema:
+        type: string
+        format: uuid
+      example: 1e22062b-559e-441f-b3c2-394a06ec8b15
+
+  responses:
+    ErrorValidacion:
+      description: La solicitud no cumple las reglas de validación del endpoint.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPValidationError'
+    DiagnosticoNoEncontrado:
+      description: No existe un diagnóstico con el identificador indicado.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorDetalle'
+          example:
+            detail: No existe un diagnóstico con el identificador indicado.
+    ProveedorNoDisponible:
+      description: El proveedor de IA no está disponible o su configuración es inválida.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorDetalle'
+          example:
+            detail: El proveedor de IA no está disponible en este momento.
+
+  schemas:
+    RespuestaSalud:
+      type: object
+      required: [estado]
+      properties:
+        estado:
+          type: string
+          example: disponible
+
+    PreguntaInstrumentoRespuesta:
+      type: object
+      required: [id, texto, categoria, escala_minima, escala_maxima]
+      properties:
+        id:
+          type: string
+          example: TEC-001
+        texto:
+          type: string
+          example: ¿Qué tan segura te sientes al resolver problemas de programación paso a paso?
+        categoria:
+          type: string
+          enum: [tecnica, actitudinal]
+        escala_minima:
+          type: integer
+          default: 1
+        escala_maxima:
+          type: integer
+          default: 5
+
+    InstrumentoActivoRespuesta:
+      type: object
+      required: [instrumento_id, nombre, descripcion, preguntas]
+      properties:
+        instrumento_id:
+          type: string
+          example: diagnostico-inicial-v1
+        nombre:
+          type: string
+          example: Instrumento simulado de diagnóstico inicial
+        descripcion:
+          type: string
+        preguntas:
+          type: array
+          items:
+            $ref: '#/components/schemas/PreguntaInstrumentoRespuesta'
+
+    RespuestaDiagnosticoEntrada:
+      type: object
+      required: [pregunta_id, valor]
+      properties:
+        pregunta_id:
+          type: string
+          minLength: 1
+          maxLength: 30
+          example: TEC-001
+        valor:
+          type: integer
+          minimum: 1
+          maximum: 5
+          example: 4
+
+    SolicitudCrearDiagnostico:
+      type: object
+      required: [instrumento_id, respuestas]
+      properties:
+        instrumento_id:
+          type: string
+          minLength: 1
+          maxLength: 100
+          description: Debe ser el instrumento activo `diagnostico-inicial-v1`.
+          example: diagnostico-inicial-v1
+        respuestas:
+          type: array
+          minItems: 1
+          description: Debe contener una respuesta única para cada pregunta activa.
+          items:
+            $ref: '#/components/schemas/RespuestaDiagnosticoEntrada'
+
+    DiagnosticoCreadoRespuesta:
+      type: object
+      required: [diagnostico_id, instrumento_id, estado, fecha_creacion]
+      properties:
+        diagnostico_id:
+          type: string
+          format: uuid
+          example: 1e22062b-559e-441f-b3c2-394a06ec8b15
+        instrumento_id:
+          type: string
+          example: diagnostico-inicial-v1
+        estado:
+          type: string
+          example: registrado
+        fecha_creacion:
+          type: string
+          format: date-time
+          example: '2026-09-19T01:56:46.345316Z'
+
+    CompetenciaOrientativaRespuesta:
+      type: object
+      required: [pregunta_id, nombre, categoria, puntaje, clasificacion, recurso_simulado]
+      properties:
+        pregunta_id:
+          type: string
+          example: TEC-001
+        nombre:
+          type: string
+          example: Resolución de problemas de programación
+        categoria:
+          type: string
+          enum: [tecnica, actitudinal]
+        puntaje:
+          type: integer
+          minimum: 1
+          maximum: 5
+          example: 4
+        clasificacion:
+          type: string
+          enum: [fortaleza, oportunidad]
+        recurso_simulado:
+          type: string
+          example: Guía simulada: descomposición de problemas de programación.
+
+    ResultadoOrientativoRespuesta:
+      type: object
+      required: [diagnostico_id, instrumento_id, fortalezas, oportunidades, aviso]
+      properties:
+        diagnostico_id:
+          type: string
+          format: uuid
+        instrumento_id:
+          type: string
+          example: diagnostico-inicial-v1
+        fortalezas:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompetenciaOrientativaRespuesta'
+        oportunidades:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompetenciaOrientativaRespuesta'
+        aviso:
+          type: string
+          example: Resultado orientativo generado con reglas simuladas del MVP. No corresponde a una evaluación académica, psicológica ni a una recomendación generada por inteligencia artificial.
+
+    SolicitudConversacionEntrada:
+      type: object
+      required: [sesion_id, mensaje]
+      properties:
+        sesion_id:
+          type: string
+          format: uuid
+          description: Identificador temporal de la sesión de conversación.
+          example: 5d54f6d2-8f5c-4dc5-982a-6bd8bbd61e5a
+        mensaje:
+          type: string
+          minLength: 1
+          maxLength: 1000
+          description: Mensaje no vacío de la estudiante.
+          example: ¿Qué recurso puedo revisar para fortalecer mis fundamentos de datos?
+        diagnostico_id:
+          type: [string, 'null']
+          format: uuid
+          description: Diagnóstico opcional usado para construir contexto orientativo mínimo.
+          example: 1e22062b-559e-441f-b3c2-394a06ec8b15
+
+    RecursoConversacionRespuesta:
+      type: object
+      required: [titulo, descripcion]
+      properties:
+        titulo:
+          type: string
+          example: Fundamentos de datos
+        descripcion:
+          type: string
+          example: Recurso recomendado para repasar conceptos iniciales.
+        enlace:
+          type: [string, 'null']
+          format: uri
+          example: https://ejemplo.edu.co/recursos/fundamentos-datos
+
+    RespuestaConversacionSalida:
+      type: object
+      required: [respuesta, recursos, aviso_alcance, proveedor_modelo]
+      properties:
+        respuesta:
+          type: string
+          example: Puedes iniciar repasando los fundamentos de datos y practicar con ejercicios cortos.
+        recursos:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecursoConversacionRespuesta'
+        aviso_alcance:
+          type: string
+          example: Esta conversación ofrece orientación general para el aprendizaje. No corresponde a una evaluación académica, psicológica ni profesional.
+        proveedor_modelo:
+          type: string
+          description: Identificador del proveedor configurado, sin exponer credenciales.
+          example: gemini
+
+    ErrorDetalle:
+      type: object
+      required: [detail]
+      properties:
+        detail:
+          type: string
+
+    ValidacionDetalle:
+      type: object
+      required: [loc, msg, type]
+      properties:
+        loc:
+          type: array
+          items: {}
+          example: [body, mensaje]
+        msg:
+          type: string
+          example: Field required
+        type:
+          type: string
+          example: missing
+
+    HTTPValidationError:
+      type: object
+      properties:
+        detail:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidacionDetalle'
