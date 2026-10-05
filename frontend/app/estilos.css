@@ -39,4 +39,6 @@ button:disabled { cursor: wait; opacity: 0.7; }
 .respuesta-chat h2, .respuesta-chat h3 { margin-top: 0; }
 .lista-recursos-chat { display: grid; gap: 0.75rem; margin: 0; padding-left: 1.25rem; }
 .lista-recursos-chat p { margin: 0.35rem 0; }
+.lista-fuentes-chat { display: grid; gap: 0.5rem; margin: 0; padding-left: 1.25rem; }
+.lista-fuentes-chat p { margin: 0.25rem 0; overflow-wrap: anywhere; }
 @media (max-width: 34rem) { section { padding: 1.5rem; } .opciones-escala { grid-template-columns: 1fr; } .opcion-escala { grid-template-columns: auto auto 1fr; justify-content: start; gap: 0.5rem; min-height: auto; text-align: left; } }

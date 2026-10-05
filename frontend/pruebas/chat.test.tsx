@@ -30,6 +30,7 @@ describe("interfaz del chat orientativo", () => {
       tipo_respuesta: "orientacion",
       respuesta: "Practica con un ejemplo pequeño.",
       recursos: [{ titulo: "Guía simulada", descripcion: "Practica paso a paso.", enlace: null }],
+      fuentes_documentales: [{ identificador: "FCD-001.pdf", referencia: "fuentes/FCD-001", ubicacion: "página 1" }],
       aviso_alcance: "Esta conversación ofrece orientación general.",
       proveedor_modelo: "simulado",
     })));
@@ -40,5 +41,7 @@ describe("interfaz del chat orientativo", () => {
 
     expect(await screen.findByText("Practica con un ejemplo pequeño.")).toBeTruthy();
     expect(screen.getByText("Guía simulada")).toBeTruthy();
+    expect(screen.getByText("Fuentes consultadas")).toBeTruthy();
+    expect(screen.getByText("FCD-001.pdf")).toBeTruthy();
   });
 });

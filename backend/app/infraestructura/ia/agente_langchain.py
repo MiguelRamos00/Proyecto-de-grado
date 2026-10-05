@@ -36,14 +36,24 @@ class AgenteConversacionalLangChain:
 
     def responder(self, solicitud: SolicitudConversacion) -> RespuestaConversacion:
         """Solicita una orientación y valida su estructura antes de entregarla."""
-        contexto = (
+        contexto_diagnostico = (
             f"\nContexto orientativo disponible:\n{solicitud.contexto_diagnostico}"
             if solicitud.contexto_diagnostico
             else ""
         )
+        contexto_documental = (
+            f"\nEvidencia documental recuperada:\n{solicitud.contexto_documental}"
+            if solicitud.contexto_documental
+            else ""
+        )
         mensajes = [
             SystemMessage(content=PROMPT_ORIENTACION_V1),
-            HumanMessage(content=f"Consulta de la estudiante:\n{solicitud.mensaje}{contexto}"),
+            HumanMessage(
+                content=(
+                    f"Consulta de la estudiante:\n{solicitud.mensaje}"
+                    f"{contexto_diagnostico}{contexto_documental}"
+                )
+            ),
         ]
         try:
             resultado = self._modelo.invoke(mensajes)

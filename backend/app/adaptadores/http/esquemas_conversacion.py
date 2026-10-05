@@ -31,6 +31,14 @@ class RecursoConversacionRespuesta(BaseModel):
     enlace: str | None = None
 
 
+class FuenteDocumentalRespuesta(BaseModel):
+    """Referencia de una fuente documental consultada para la orientación."""
+
+    identificador: str
+    referencia: str
+    ubicacion: str | None = None
+
+
 class RespuestaConversacionSalida(BaseModel):
     """Contrato de salida de una respuesta conversacional."""
 
@@ -39,5 +47,6 @@ class RespuestaConversacionSalida(BaseModel):
     ]
     respuesta: str
     recursos: list[RecursoConversacionRespuesta]
+    fuentes_documentales: list[FuenteDocumentalRespuesta]
     aviso_alcance: str
     proveedor_modelo: str
