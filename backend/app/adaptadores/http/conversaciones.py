@@ -6,6 +6,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.adaptadores.http.esquemas_conversacion import (
+    FuenteDocumentalRespuesta,
     RecursoConversacionRespuesta,
     RespuestaConversacionSalida,
     SolicitudConversacionEntrada,
@@ -24,6 +25,9 @@ from app.infraestructura.ia.fabrica_agentes import (
 from app.infraestructura.ia.errores import (
     ConfiguracionProveedorInvalidaError,
     ProveedorIAIndisponibleError,
+)
+from app.infraestructura.conocimiento.fabrica_consultor_documental import (
+    crear_consultor_documental_opcional,
 )
 from app.puertos.repositorio_diagnosticos import RepositorioDiagnosticos
 
@@ -60,7 +64,8 @@ def crear_conversacion(
                 repositorio, solicitud_http.diagnostico_id
             )
         agente = crear_agente_conversacional()
-        resultado = ConversarConAgente(agente).ejecutar(
+        consultor_documental = crear_consultor_documental_opcional()
+        resultado = ConversarConAgente(agente, consultor_documental).ejecutar(
             SolicitudConversacion(
                 sesion_id=solicitud_http.sesion_id,
                 mensaje=solicitud_http.mensaje,
@@ -84,6 +89,10 @@ def crear_conversacion(
         recursos=[
             RecursoConversacionRespuesta.model_validate(recurso, from_attributes=True)
             for recurso in resultado.recursos
+        ],
+        fuentes_documentales=[
+            FuenteDocumentalRespuesta.model_validate(fuente, from_attributes=True)
+            for fuente in resultado.fuentes_documentales
         ],
         aviso_alcance=resultado.aviso_alcance,
         proveedor_modelo=obtener_proveedor_activo(),

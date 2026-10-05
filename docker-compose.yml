@@ -30,6 +30,9 @@ services:
       CLAVE_API_IA: ${CLAVE_API_IA}
       URL_BASE_IA: ${URL_BASE_IA:-}
       TEMPERATURA_IA: ${TEMPERATURA_IA:-0.2}
+      USAR_FILE_SEARCH: ${USAR_FILE_SEARCH:-false}
+      ALMACEN_FILE_SEARCH: ${ALMACEN_FILE_SEARCH:-}
+      MODELO_FILE_SEARCH: ${MODELO_FILE_SEARCH:-}
     ports:
       - "${PUERTO_BACKEND}:8000"
     depends_on:

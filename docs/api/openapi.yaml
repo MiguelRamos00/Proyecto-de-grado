@@ -369,7 +369,7 @@ components:
 
     RespuestaConversacionSalida:
       type: object
-      required: [tipo_respuesta, respuesta, recursos, aviso_alcance, proveedor_modelo]
+      required: [tipo_respuesta, respuesta, recursos, fuentes_documentales, aviso_alcance, proveedor_modelo]
       properties:
         tipo_respuesta:
           type: string
@@ -383,6 +383,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RecursoConversacionRespuesta'
+        fuentes_documentales:
+          type: array
+          description: Referencias de las fuentes recuperadas cuando File Search está activo.
+          items:
+            $ref: '#/components/schemas/FuenteDocumentalRespuesta'
         aviso_alcance:
           type: string
           example: Esta conversación ofrece orientación general para el aprendizaje. No corresponde a una evaluación académica, psicológica ni profesional.
@@ -390,6 +395,20 @@ components:
           type: string
           description: Identificador del proveedor configurado, sin exponer credenciales.
           example: gemini
+
+    FuenteDocumentalRespuesta:
+      type: object
+      required: [identificador, referencia, ubicacion]
+      properties:
+        identificador:
+          type: string
+          example: FCD-001-brechas-genero.pdf
+        referencia:
+          type: string
+          example: fuentes/FCD-001
+        ubicacion:
+          type: [string, 'null']
+          example: página 1
 
     ErrorDetalle:
       type: object

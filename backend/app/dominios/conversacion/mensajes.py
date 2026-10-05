@@ -27,6 +27,7 @@ class SolicitudConversacion:
     mensaje: str
     diagnostico_id: UUID | None = None
     contexto_diagnostico: str | None = None
+    contexto_documental: str | None = None
 
 
 @dataclass(frozen=True)
@@ -39,10 +40,20 @@ class RecursoConversacional:
 
 
 @dataclass(frozen=True)
+class FuenteDocumentalConsultada:
+    """Referencia breve de una fuente usada para orientar la respuesta."""
+
+    identificador: str
+    referencia: str
+    ubicacion: str | None = None
+
+
+@dataclass(frozen=True)
 class RespuestaConversacion:
     """Salida segura y estructurada de una conversación orientativa."""
 
     respuesta: str
     recursos: tuple[RecursoConversacional, ...]
+    fuentes_documentales: tuple[FuenteDocumentalConsultada, ...] = ()
     tipo_respuesta: TipoRespuestaConversacional = TipoRespuestaConversacional.ORIENTACION
     aviso_alcance: str = AVISO_ALCANCE_ORIENTACION

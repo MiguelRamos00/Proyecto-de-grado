@@ -12,10 +12,17 @@ export const esquemaRecursoConversacion = z.object({
   enlace: z.string().url().nullable(),
 });
 
+export const esquemaFuenteDocumental = z.object({
+  identificador: z.string().min(1),
+  referencia: z.string().min(1),
+  ubicacion: z.string().min(1).nullable(),
+});
+
 export const esquemaRespuestaConversacion = z.object({
   tipo_respuesta: z.enum(["orientacion", "fuera_de_alcance", "sin_contexto_suficiente"]),
   respuesta: z.string().min(1),
   recursos: z.array(esquemaRecursoConversacion),
+  fuentes_documentales: z.array(esquemaFuenteDocumental),
   aviso_alcance: z.string().min(1),
   proveedor_modelo: z.string().min(1),
 });

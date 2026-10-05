@@ -19,8 +19,10 @@ class ModeloConversacionalFalso:
 
     def __init__(self, contenido: object) -> None:
         self._contenido = contenido
+        self.entrada: object | None = None
 
     def invoke(self, entrada: object) -> ResultadoModeloFalso:
+        self.entrada = entrada
         return ResultadoModeloFalso(self._contenido)
 
 
@@ -49,3 +51,23 @@ def test_adaptador_reemplaza_una_respuesta_no_json_por_una_salida_segura() -> No
 
     assert resultado.tipo_respuesta is TipoRespuestaConversacional.SIN_CONTEXTO_SUFICIENTE
     assert "No fue posible generar" in resultado.respuesta
+
+
+def test_adaptador_entrega_la_evidencia_documental_al_modelo() -> None:
+    """El modelo recibe solo el contexto documental construido por el caso de uso."""
+    modelo = ModeloConversacionalFalso(
+        '{"tipo_respuesta":"orientacion","respuesta":"Revisa la fuente indicada."}'
+    )
+    agente = AgenteConversacionalLangChain(modelo, "falso")
+
+    agente.responder(
+        SolicitudConversacion(
+            sesion_id=uuid4(),
+            mensaje="¿Qué plantea la fuente?",
+            contexto_documental="[FCD-001.pdf, página 1] Contexto sobre brechas educativas.",
+        )
+    )
+
+    assert modelo.entrada is not None
+    assert "Evidencia documental recuperada" in str(modelo.entrada)
+    assert "FCD-001.pdf" in str(modelo.entrada)

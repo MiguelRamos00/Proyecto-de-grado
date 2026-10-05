@@ -83,6 +83,20 @@ export function ChatOrientativo({ diagnosticoId }: { diagnosticoId?: string }) {
               </ul>
             </>
           )}
+          {respuesta.fuentes_documentales.length > 0 && (
+            <>
+              <h3>Fuentes consultadas</h3>
+              <ul className="lista-fuentes-chat">
+                {respuesta.fuentes_documentales.map((fuente) => (
+                  <li key={`${fuente.identificador}-${fuente.ubicacion ?? "general"}`}>
+                    <strong>{fuente.identificador}</strong>
+                    <span>{fuente.ubicacion ? `, ${fuente.ubicacion}` : ""}</span>
+                    <p>{fuente.referencia}</p>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
         </section>
       )}
 
