@@ -46,6 +46,18 @@ class ConsultorDocumentalFalso:
         return ResultadoConsultaDocumental(fragmentos=self.fragmentos)
 
 
+class ConsultorDocumentalConRespuestaFalsa(ConsultorDocumentalFalso):
+    """Simula la respuesta estructurada generada en la misma consulta documental."""
+
+    def consultar(self, _consulta: object) -> ResultadoConsultaDocumental:
+        self.llamadas += 1
+        return ResultadoConsultaDocumental(
+            fragmentos=self.fragmentos,
+            respuesta_orientativa="Orientación sustentada por la fuente.",
+            tipo_respuesta="orientacion",
+        )
+
+
 def test_caso_de_uso_delega_el_mensaje_al_puerto() -> None:
     """El caso de uso devuelve la respuesta entregada por el puerto."""
     solicitud = SolicitudConversacion(sesion_id=uuid4(), mensaje="Quiero practicar programación.")
@@ -59,6 +71,7 @@ def test_caso_de_uso_delega_el_mensaje_al_puerto() -> None:
 def test_endpoint_responde_con_el_proveedor_simulado(monkeypatch: MonkeyPatch) -> None:
     """La ruta funciona sin claves ni peticiones a un modelo externo."""
     monkeypatch.setenv("PROVEEDOR_IA", "simulado")
+    monkeypatch.setenv("USAR_FILE_SEARCH", "false")
     cliente = TestClient(aplicacion)
 
     respuesta = cliente.post(
@@ -182,6 +195,30 @@ def test_caso_de_uso_agrega_contexto_y_fuentes_documentales() -> None:
     assert consultor.llamadas == 1
     assert resultado.fuentes_documentales[0].identificador == "FCD-001.pdf"
     assert resultado.fuentes_documentales[0].ubicacion == "página 1"
+
+
+def test_caso_de_uso_reutiliza_respuesta_de_file_search_sin_segunda_llamada() -> None:
+    """Una respuesta JSON documental evita invocar por segunda vez al agente."""
+    agente = AgenteConversacionalContable()
+    consultor = ConsultorDocumentalConRespuestaFalsa(
+        (
+            FragmentoDocumental(
+                contenido="La fuente aporta contexto sobre brechas educativas.",
+                fuente_id="FCD-001.pdf",
+                referencia="fuentes/FCD-001",
+                ubicacion="página 1",
+            ),
+        )
+    )
+    solicitud = SolicitudConversacion(
+        sesion_id=uuid4(), mensaje="¿Qué dice la fuente sobre las brechas?"
+    )
+
+    resultado = ConversarConAgente(agente, consultor).ejecutar(solicitud)
+
+    assert consultor.llamadas == 1
+    assert agente.llamadas == 0
+    assert resultado.respuesta == "Orientación sustentada por la fuente."
 
 
 def test_caso_de_uso_no_delega_si_file_search_no_recupera_evidencia() -> None:

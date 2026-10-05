@@ -56,6 +56,21 @@ class ConversarConAgente:
         if not resultado_documental.fragmentos:
             return _respuesta_sin_contexto_documental()
 
+        if (
+            resultado_documental.respuesta_orientativa
+            and resultado_documental.tipo_respuesta
+        ):
+            return RespuestaConversacion(
+                respuesta=resultado_documental.respuesta_orientativa,
+                recursos=(),
+                tipo_respuesta=TipoRespuestaConversacional(
+                    resultado_documental.tipo_respuesta
+                ),
+                fuentes_documentales=_crear_fuentes_consultadas(
+                    resultado_documental.fragmentos
+                ),
+            )
+
         solicitud_con_contexto = replace(
             solicitud,
             contexto_documental=_construir_contexto_documental(resultado_documental.fragmentos),
@@ -126,4 +141,6 @@ def _crear_fuentes_consultadas(
                 ubicacion=fragmento.ubicacion,
             )
         )
+        if len(fuentes) == 3:
+            break
     return tuple(fuentes)

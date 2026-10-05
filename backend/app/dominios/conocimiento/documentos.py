@@ -49,6 +49,8 @@ class FragmentoDocumental:
 
 @dataclass(frozen=True)
 class ResultadoConsultaDocumental:
-    """Resultado de una búsqueda documental sin interpretar el contenido."""
+    """Resultado trazable de una consulta documental controlada."""
 
     fragmentos: tuple[FragmentoDocumental, ...] = ()
+    respuesta_orientativa: str | None = None
+    tipo_respuesta: str | None = None
