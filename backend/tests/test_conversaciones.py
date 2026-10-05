@@ -115,6 +115,22 @@ def test_caso_de_uso_bloquea_evaluaciones_no_permitidas() -> None:
     assert resultado.tipo_respuesta is TipoRespuestaConversacional.FUERA_DE_ALCANCE
 
 
+def test_caso_de_uso_bloquea_evaluaciones_antes_de_consultar_file_search() -> None:
+    """Las reglas de alcance se aplican antes de recuperar fuentes externas."""
+    agente = AgenteConversacionalContable()
+    consultor = ConsultorDocumentalFalso(())
+    solicitud = SolicitudConversacion(
+        sesion_id=uuid4(),
+        mensaje="Necesito un diagnóstico psicológico sobre mi desempeño.",
+    )
+
+    resultado = ConversarConAgente(agente, consultor).ejecutar(solicitud)
+
+    assert consultor.llamadas == 0
+    assert agente.llamadas == 0
+    assert resultado.tipo_respuesta is TipoRespuestaConversacional.FUERA_DE_ALCANCE
+
+
 def test_caso_de_uso_bloquea_consultas_fuera_del_alcance() -> None:
     """Las consultas ajenas al objetivo del MVP no llegan al proveedor."""
     agente = AgenteConversacionalContable()

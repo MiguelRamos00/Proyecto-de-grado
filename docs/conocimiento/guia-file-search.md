@@ -40,4 +40,10 @@ docker compose run --rm backend python -m app.infraestructura.conocimiento.admin
 
 ## Trazabilidad
 
-El adaptador convierte las citas devueltas por Gemini en fragmentos con identificador de archivo, referencia y página cuando la API la proporciona. La siguiente entrega conectará esos fragmentos con el agente conversacional, el contrato HTTP y la interfaz.
+El adaptador convierte las citas devueltas por Gemini en fragmentos con identificador de archivo, referencia y página cuando la API la proporciona. El caso de uso entrega al agente únicamente el contexto recuperado y expone las referencias en el contrato HTTP y en la interfaz.
+
+Si File Search está activo pero no recupera evidencia, el agente no inventa una respuesta basada en documentos: devuelve una orientación segura con el tipo `sin_contexto_suficiente`. Las reglas de alcance se aplican antes de consultar fuentes o invocar el modelo.
+
+## Verificación
+
+Las pruebas automáticas cubren la activación explícita, la configuración incompleta, el bloqueo de consultas fuera de alcance, la ausencia de evidencia y la presentación de citas en la interfaz. Para una validación manual con Gemini se debe aprobar primero FCD-001, cargar el archivo mediante el comando anterior y registrar la evidencia de la cita devuelta.
