@@ -16,6 +16,7 @@ class CitaFalsa:
     type: str
     file_name: str
     source: str
+    document_uri: str | None = None
     page_number: int | None = None
 
 
@@ -35,6 +36,7 @@ class PasoFalso:
 @dataclass
 class InteraccionFalsa:
     steps: list[PasoFalso]
+    output_text: str = "Orientación basada en la fuente."
 
 
 class InteraccionesFalsas:
@@ -57,7 +59,8 @@ class InteraccionesFalsas:
                                 CitaFalsa(
                                     type="file_citation",
                                     file_name="FCD-001.pdf",
-                                    source="fuentes/FCD-001",
+                                    source="Contenido recuperado que no debe exponerse como referencia.",
+                                    document_uri="fileSearchStores/agente-radia/documents/fcd-001",
                                     page_number=1,
                                 )
                             ],
@@ -108,18 +111,22 @@ def test_consultor_recupera_fragmento_con_cita() -> None:
     resultado = consultor.consultar(ConsultaDocumental(pregunta="¿Qué plantea la fuente?"))
 
     assert len(resultado.fragmentos) == 1
+    assert resultado.respuesta_orientativa == "Orientación basada en la fuente."
+    assert resultado.tipo_respuesta == "orientacion"
     assert resultado.fragmentos[0].fuente_id == "FCD-001.pdf"
+    assert resultado.fragmentos[0].referencia == (
+        "fileSearchStores/agente-radia/documents/fcd-001"
+    )
     assert resultado.fragmentos[0].ubicacion == "página 1"
-    assert cliente.interactions.parametros == {
-        "model": "gemini-prueba",
-        "input": "¿Qué plantea la fuente?",
-        "tools": [
-            {
-                "type": "file_search",
-                "file_search_store_names": ["fileSearchStores/agente-radia"],
-            }
-        ],
-    }
+    assert cliente.interactions.parametros is not None
+    assert cliente.interactions.parametros["model"] == "gemini-prueba"
+    assert "¿Qué plantea la fuente?" in str(cliente.interactions.parametros["input"])
+    assert cliente.interactions.parametros["tools"] == [
+        {
+            "type": "file_search",
+            "file_search_store_names": ["fileSearchStores/agente-radia"],
+        }
+    ]
 
 
 def test_administrador_prepara_carga_explicita_de_un_archivo(tmp_path: Path) -> None:

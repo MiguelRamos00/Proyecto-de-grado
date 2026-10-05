@@ -33,7 +33,7 @@ def crear_almacen(cliente: ClienteAdministradorFileSearch, nombre: str) -> str:
     almacen = cliente.file_search_stores.create(
         config={
             "display_name": nombre,
-            "embedding_model": "models/gemini-embedding-001",
+            "embedding_model": "models/gemini-embedding-2",
         }
     )
     return str(getattr(almacen, "name"))

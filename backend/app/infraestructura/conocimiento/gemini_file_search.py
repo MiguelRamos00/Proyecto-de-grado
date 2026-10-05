@@ -1,6 +1,8 @@
 """Adaptador de Gemini File Search para el puerto documental."""
 
 import os
+import logging
+import time
 from typing import Protocol
 
 from app.dominios.conocimiento.documentos import (
@@ -9,6 +11,11 @@ from app.dominios.conocimiento.documentos import (
     ResultadoConsultaDocumental,
 )
 from app.puertos.consultor_documental import ConsultorDocumental
+from app.infraestructura.ia.esquemas_respuesta import RespuestaGeneradaControlada
+from app.infraestructura.ia.prompts.orientacion_v1 import PROMPT_ORIENTACION_V1
+
+
+registro = logging.getLogger(__name__)
 
 
 class InteraccionesGemini(Protocol):
@@ -37,9 +44,10 @@ class ConsultorDocumentalGemini(ConsultorDocumental):
         if not consulta.pregunta.strip():
             return ResultadoConsultaDocumental()
 
+        inicio = time.perf_counter()
         interaccion = self._cliente.interactions.create(
             model=self._modelo,
-            input=consulta.pregunta,
+            input=_construir_entrada_controlada(consulta.pregunta),
             tools=[
                 {
                     "type": "file_search",
@@ -47,8 +55,18 @@ class ConsultorDocumentalGemini(ConsultorDocumental):
                 }
             ],
         )
+        duracion_ms = round((time.perf_counter() - inicio) * 1000)
+        registro.info("File Search y validación de respuesta completados en %s ms.", duracion_ms)
+        fragmentos = tuple(_extraer_fragmentos_citados(interaccion))
+        respuesta_controlada = _extraer_respuesta_controlada(interaccion)
         return ResultadoConsultaDocumental(
-            fragmentos=tuple(_extraer_fragmentos_citados(interaccion))
+            fragmentos=fragmentos,
+            respuesta_orientativa=(
+                respuesta_controlada.respuesta if respuesta_controlada else None
+            ),
+            tipo_respuesta=(
+                respuesta_controlada.tipo_respuesta if respuesta_controlada else None
+            ),
         )
 
 
@@ -88,7 +106,9 @@ def _extraer_fragmentos_citados(interaccion: object) -> list[FragmentoDocumental
                 if getattr(cita, "type", None) != "file_citation":
                     continue
                 nombre_archivo = str(getattr(cita, "file_name", "fuente_documental"))
-                referencia = str(getattr(cita, "source", None) or nombre_archivo)
+                referencia = str(
+                    getattr(cita, "document_uri", None) or nombre_archivo
+                )
                 pagina = getattr(cita, "page_number", None)
                 fragmentos.append(
                     FragmentoDocumental(
@@ -99,3 +119,30 @@ def _extraer_fragmentos_citados(interaccion: object) -> list[FragmentoDocumental
                     )
                 )
     return fragmentos
+
+
+def _construir_entrada_controlada(pregunta: str) -> str:
+    """Envía reglas y pregunta en una sola interacción con File Search."""
+    reglas_sin_formato = PROMPT_ORIENTACION_V1.split("\n\nFormato obligatorio:", maxsplit=1)[0]
+    return (
+        f"{reglas_sin_formato}\n\n"
+        "Responde con orientación breve en texto plano. Usa solamente la evidencia "
+        "recuperada por File Search.\n\n"
+        f"Consulta de la estudiante:\n{pregunta}"
+    )
+
+
+def _extraer_respuesta_controlada(
+    interaccion: object,
+) -> RespuestaGeneradaControlada | None:
+    """Valida la salida JSON sin volver a llamar al modelo conversacional."""
+    texto_salida = str(getattr(interaccion, "output_text", "")).strip()
+    if not texto_salida:
+        return None
+    try:
+        return RespuestaGeneradaControlada.model_validate(
+            {"tipo_respuesta": "orientacion", "respuesta": texto_salida}
+        )
+    except ValueError:
+        registro.warning("File Search devolvió una respuesta fuera del formato controlado.")
+        return None
