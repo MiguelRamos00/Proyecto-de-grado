@@ -5,9 +5,16 @@ import logging
 from typing import Protocol
 
 from langchain_core.messages import HumanMessage, SystemMessage
+from pydantic import ValidationError
 
-from app.dominios.conversacion.mensajes import RespuestaConversacion, SolicitudConversacion
+from app.dominios.conversacion.mensajes import (
+    RespuestaConversacion,
+    SolicitudConversacion,
+    TipoRespuestaConversacional,
+)
 from app.infraestructura.ia.errores import ProveedorIAIndisponibleError
+from app.infraestructura.ia.esquemas_respuesta import RespuestaGeneradaControlada
+from app.infraestructura.ia.prompts.orientacion_v1 import PROMPT_ORIENTACION_V1
 
 
 registro = logging.getLogger(__name__)
@@ -28,22 +35,14 @@ class AgenteConversacionalLangChain:
         self.nombre_proveedor = nombre_proveedor
 
     def responder(self, solicitud: SolicitudConversacion) -> RespuestaConversacion:
-        """Solicita una orientación breve, segura y limitada al contexto permitido."""
+        """Solicita una orientación y valida su estructura antes de entregarla."""
         contexto = (
             f"\nContexto orientativo disponible:\n{solicitud.contexto_diagnostico}"
             if solicitud.contexto_diagnostico
             else ""
         )
         mensajes = [
-            SystemMessage(
-                content=(
-                    "Responde en español con orientación general de aprendizaje. "
-                    "No realices evaluaciones académicas, psicológicas ni profesionales. "
-                    "No inventes datos de RADIA ni recursos no confirmados. "
-                    "No solicites datos personales ni credenciales. "
-                    "Entrega una respuesta breve, clara y respetuosa."
-                )
-            ),
+            SystemMessage(content=PROMPT_ORIENTACION_V1),
             HumanMessage(content=f"Consulta de la estudiante:\n{solicitud.mensaje}{contexto}"),
         ]
         try:
@@ -57,8 +56,24 @@ class AgenteConversacionalLangChain:
                 "El proveedor de IA no está disponible en este momento."
             ) from error
         contenido = getattr(resultado, "content", "")
-        respuesta = contenido if isinstance(contenido, str) and contenido.strip() else (
-            "No fue posible generar una orientación en este momento. "
-            "Puedes intentar nuevamente con una pregunta más específica."
+        try:
+            respuesta_controlada = RespuestaGeneradaControlada.model_validate_json(contenido)
+        except (TypeError, ValidationError):
+            registro.warning(
+                "El proveedor de IA '%s' devolvió una respuesta fuera del formato controlado.",
+                self.nombre_proveedor,
+            )
+            return RespuestaConversacion(
+                respuesta=(
+                    "No fue posible generar una orientación con información suficiente en este "
+                    "momento. Puedes intentar nuevamente con una pregunta más específica."
+                ),
+                recursos=(),
+                tipo_respuesta=TipoRespuestaConversacional.SIN_CONTEXTO_SUFICIENTE,
+            )
+
+        return RespuestaConversacion(
+            respuesta=respuesta_controlada.respuesta,
+            recursos=(),
+            tipo_respuesta=TipoRespuestaConversacional(respuesta_controlada.tipo_respuesta),
         )
-        return RespuestaConversacion(respuesta=respuesta, recursos=())

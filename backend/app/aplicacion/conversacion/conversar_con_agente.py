@@ -1,6 +1,10 @@
 """Caso de uso que coordina el puerto del agente conversacional."""
 
-from app.dominios.conversacion.mensajes import RespuestaConversacion, SolicitudConversacion
+from app.dominios.conversacion.mensajes import (
+    RespuestaConversacion,
+    SolicitudConversacion,
+    TipoRespuestaConversacional,
+)
 from app.dominios.conversacion.reglas_alcance import (
     MotivoBloqueoConversacion,
     evaluar_alcance_conversacion,
@@ -18,14 +22,16 @@ class ConversarConAgente:
         """Evalúa el alcance y delega solo las consultas permitidas al puerto."""
         decision = evaluar_alcance_conversacion(solicitud.mensaje)
         if not decision.permitida:
+            assert decision.motivo is not None
             return RespuestaConversacion(
                 respuesta=_obtener_respuesta_segura(decision.motivo),
                 recursos=(),
+                tipo_respuesta=TipoRespuestaConversacional.FUERA_DE_ALCANCE,
             )
         return self._agente.responder(solicitud)
 
 
-def _obtener_respuesta_segura(motivo: MotivoBloqueoConversacion | None) -> str:
+def _obtener_respuesta_segura(motivo: MotivoBloqueoConversacion) -> str:
     """Devuelve un mensaje fijo sin consultar al proveedor externo."""
     respuestas = {
         MotivoBloqueoConversacion.DATOS_SENSIBLES: (

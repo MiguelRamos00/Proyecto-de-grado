@@ -1,5 +1,6 @@
 """Contratos HTTP del módulo de conversación."""
 
+from typing import Literal
 from uuid import UUID
 
 from pydantic import BaseModel, Field, field_validator
@@ -33,6 +34,9 @@ class RecursoConversacionRespuesta(BaseModel):
 class RespuestaConversacionSalida(BaseModel):
     """Contrato de salida de una respuesta conversacional."""
 
+    tipo_respuesta: Literal[
+        "orientacion", "fuera_de_alcance", "sin_contexto_suficiente"
+    ]
     respuesta: str
     recursos: list[RecursoConversacionRespuesta]
     aviso_alcance: str

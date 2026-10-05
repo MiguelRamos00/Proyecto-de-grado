@@ -1,6 +1,7 @@
 """Objetos de valor para una interacción conversacional del MVP."""
 
 from dataclasses import dataclass
+from enum import StrEnum
 from uuid import UUID
 
 
@@ -8,6 +9,14 @@ AVISO_ALCANCE_ORIENTACION = (
     "Esta conversación ofrece orientación general para el aprendizaje. "
     "No corresponde a una evaluación académica, psicológica ni profesional."
 )
+
+
+class TipoRespuestaConversacional(StrEnum):
+    """Tipos controlados que puede devolver el agente conversacional."""
+
+    ORIENTACION = "orientacion"
+    FUERA_DE_ALCANCE = "fuera_de_alcance"
+    SIN_CONTEXTO_SUFICIENTE = "sin_contexto_suficiente"
 
 
 @dataclass(frozen=True)
@@ -35,4 +44,5 @@ class RespuestaConversacion:
 
     respuesta: str
     recursos: tuple[RecursoConversacional, ...]
+    tipo_respuesta: TipoRespuestaConversacional = TipoRespuestaConversacional.ORIENTACION
     aviso_alcance: str = AVISO_ALCANCE_ORIENTACION

@@ -4,7 +4,11 @@ from fastapi.testclient import TestClient
 from pytest import MonkeyPatch
 
 from app.aplicacion.conversacion.conversar_con_agente import ConversarConAgente
-from app.dominios.conversacion.mensajes import RespuestaConversacion, SolicitudConversacion
+from app.dominios.conversacion.mensajes import (
+    RespuestaConversacion,
+    SolicitudConversacion,
+    TipoRespuestaConversacional,
+)
 from app.main import aplicacion
 
 
@@ -77,6 +81,7 @@ def test_caso_de_uso_bloquea_datos_sensibles_sin_consultar_al_proveedor() -> Non
 
     assert agente.llamadas == 0
     assert "no compartas contraseñas" in resultado.respuesta
+    assert resultado.tipo_respuesta is TipoRespuestaConversacional.FUERA_DE_ALCANCE
 
 
 def test_caso_de_uso_bloquea_evaluaciones_no_permitidas() -> None:
@@ -91,6 +96,7 @@ def test_caso_de_uso_bloquea_evaluaciones_no_permitidas() -> None:
 
     assert agente.llamadas == 0
     assert "No realizo evaluaciones psicológicas" in resultado.respuesta
+    assert resultado.tipo_respuesta is TipoRespuestaConversacional.FUERA_DE_ALCANCE
 
 
 def test_caso_de_uso_bloquea_consultas_fuera_del_alcance() -> None:
@@ -105,6 +111,7 @@ def test_caso_de_uso_bloquea_consultas_fuera_del_alcance() -> None:
 
     assert agente.llamadas == 0
     assert "fuera del alcance" in resultado.respuesta
+    assert resultado.tipo_respuesta is TipoRespuestaConversacional.FUERA_DE_ALCANCE
 
 
 def test_caso_de_uso_delega_consultas_de_aprendizaje_permitidas() -> None:
