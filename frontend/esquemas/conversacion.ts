@@ -13,6 +13,7 @@ export const esquemaRecursoConversacion = z.object({
 });
 
 export const esquemaRespuestaConversacion = z.object({
+  tipo_respuesta: z.enum(["orientacion", "fuera_de_alcance", "sin_contexto_suficiente"]),
   respuesta: z.string().min(1),
   recursos: z.array(esquemaRecursoConversacion),
   aviso_alcance: z.string().min(1),

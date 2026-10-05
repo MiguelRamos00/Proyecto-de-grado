@@ -27,6 +27,7 @@ describe("interfaz del chat orientativo", () => {
   it("envía el mensaje y presenta la orientación del backend", async () => {
     vi.stubGlobal("crypto", { randomUUID: () => "21462f3c-44f9-4fb9-8a84-1e64fc94b2d7" });
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue(respuestaJson({
+      tipo_respuesta: "orientacion",
       respuesta: "Practica con un ejemplo pequeño.",
       recursos: [{ titulo: "Guía simulada", descripcion: "Practica paso a paso.", enlace: null }],
       aviso_alcance: "Esta conversación ofrece orientación general.",

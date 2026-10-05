@@ -79,6 +79,7 @@ def crear_conversacion(
         raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=str(error)) from error
 
     return RespuestaConversacionSalida(
+        tipo_respuesta=resultado.tipo_respuesta,
         respuesta=resultado.respuesta,
         recursos=[
             RecursoConversacionRespuesta.model_validate(recurso, from_attributes=True)

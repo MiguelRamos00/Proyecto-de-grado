@@ -369,8 +369,13 @@ components:
 
     RespuestaConversacionSalida:
       type: object
-      required: [respuesta, recursos, aviso_alcance, proveedor_modelo]
+      required: [tipo_respuesta, respuesta, recursos, aviso_alcance, proveedor_modelo]
       properties:
+        tipo_respuesta:
+          type: string
+          enum: [orientacion, fuera_de_alcance, sin_contexto_suficiente]
+          description: Clasificación controlada de la respuesta antes de enviarla al frontend.
+          example: orientacion
         respuesta:
           type: string
           example: Puedes iniciar repasando los fundamentos de datos y practicar con ejercicios cortos.

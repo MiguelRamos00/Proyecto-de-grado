@@ -29,6 +29,7 @@ Esta carpeta centraliza la documentación técnica que guía la construcción de
 16. [Iteración 3: interfaz de diagnóstico](desarrollo/iteracion-3-interfaz-diagnostico.md).
 17. [Iteración 4: resultado orientativo](desarrollo/iteracion-4-resultado-orientativo.md).
 18. [Iteración 5: agente conversacional](desarrollo/iteracion-5-agente-conversacional.md).
+19. [Iteración 6: orquestación controlada del LLM](desarrollo/iteracion-6-orquestacion-llm-controlada.md).
 
 ## Estado de validación
 
