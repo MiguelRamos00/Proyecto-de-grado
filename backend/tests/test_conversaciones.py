@@ -1,6 +1,7 @@
 from uuid import uuid4
 
 from fastapi.testclient import TestClient
+from pytest import MonkeyPatch
 
 from app.aplicacion.conversacion.conversar_con_agente import ConversarConAgente
 from app.dominios.conversacion.mensajes import RespuestaConversacion, SolicitudConversacion
@@ -14,6 +15,17 @@ class AgenteConversacionalFalso:
         return RespuestaConversacion(respuesta=f"Orientación para: {solicitud.mensaje}", recursos=())
 
 
+class AgenteConversacionalContable:
+    """Doble de prueba que permite verificar si se consulta el proveedor."""
+
+    def __init__(self) -> None:
+        self.llamadas = 0
+
+    def responder(self, solicitud: SolicitudConversacion) -> RespuestaConversacion:
+        self.llamadas += 1
+        return RespuestaConversacion(respuesta="Respuesta del proveedor.", recursos=())
+
+
 def test_caso_de_uso_delega_el_mensaje_al_puerto() -> None:
     """El caso de uso devuelve la respuesta entregada por el puerto."""
     solicitud = SolicitudConversacion(sesion_id=uuid4(), mensaje="Quiero practicar programación.")
@@ -24,8 +36,9 @@ def test_caso_de_uso_delega_el_mensaje_al_puerto() -> None:
     assert "No corresponde a una evaluación" in resultado.aviso_alcance
 
 
-def test_endpoint_responde_con_el_proveedor_simulado() -> None:
+def test_endpoint_responde_con_el_proveedor_simulado(monkeypatch: MonkeyPatch) -> None:
     """La ruta funciona sin claves ni peticiones a un modelo externo."""
+    monkeypatch.setenv("PROVEEDOR_IA", "simulado")
     cliente = TestClient(aplicacion)
 
     respuesta = cliente.post(
@@ -50,3 +63,59 @@ def test_endpoint_rechaza_un_mensaje_vacio() -> None:
     )
 
     assert respuesta.status_code == 422
+
+
+def test_caso_de_uso_bloquea_datos_sensibles_sin_consultar_al_proveedor() -> None:
+    """Las reglas protegen datos antes de delegar al adaptador externo."""
+    agente = AgenteConversacionalContable()
+    solicitud = SolicitudConversacion(
+        sesion_id=uuid4(),
+        mensaje="¿Puedo enviarte mi contraseña para que revises mi cuenta?",
+    )
+
+    resultado = ConversarConAgente(agente).ejecutar(solicitud)
+
+    assert agente.llamadas == 0
+    assert "no compartas contraseñas" in resultado.respuesta
+
+
+def test_caso_de_uso_bloquea_evaluaciones_no_permitidas() -> None:
+    """El agente no delega evaluaciones psicológicas al proveedor de IA."""
+    agente = AgenteConversacionalContable()
+    solicitud = SolicitudConversacion(
+        sesion_id=uuid4(),
+        mensaje="Necesito un diagnóstico psicológico sobre mi desempeño.",
+    )
+
+    resultado = ConversarConAgente(agente).ejecutar(solicitud)
+
+    assert agente.llamadas == 0
+    assert "No realizo evaluaciones psicológicas" in resultado.respuesta
+
+
+def test_caso_de_uso_bloquea_consultas_fuera_del_alcance() -> None:
+    """Las consultas ajenas al objetivo del MVP no llegan al proveedor."""
+    agente = AgenteConversacionalContable()
+    solicitud = SolicitudConversacion(
+        sesion_id=uuid4(),
+        mensaje="¿Cuál es el pronóstico del clima para mañana?",
+    )
+
+    resultado = ConversarConAgente(agente).ejecutar(solicitud)
+
+    assert agente.llamadas == 0
+    assert "fuera del alcance" in resultado.respuesta
+
+
+def test_caso_de_uso_delega_consultas_de_aprendizaje_permitidas() -> None:
+    """Las consultas académicas válidas conservan el flujo hacia el proveedor."""
+    agente = AgenteConversacionalContable()
+    solicitud = SolicitudConversacion(
+        sesion_id=uuid4(),
+        mensaje="¿Cómo puedo practicar fundamentos de programación?",
+    )
+
+    resultado = ConversarConAgente(agente).ejecutar(solicitud)
+
+    assert agente.llamadas == 1
+    assert resultado.respuesta == "Respuesta del proveedor."
