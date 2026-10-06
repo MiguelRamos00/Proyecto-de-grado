@@ -33,6 +33,7 @@ services:
       USAR_FILE_SEARCH: ${USAR_FILE_SEARCH:-false}
       ALMACEN_FILE_SEARCH: ${ALMACEN_FILE_SEARCH:-}
       MODELO_FILE_SEARCH: ${MODELO_FILE_SEARCH:-}
+      ORIGENES_CORS: ${ORIGENES_CORS:-http://localhost:3000,http://localhost:5173}
     ports:
       - "${PUERTO_BACKEND}:8000"
     depends_on:

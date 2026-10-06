@@ -31,6 +31,7 @@ Esta carpeta centraliza la documentación técnica que guía la construcción de
 18. [Iteración 5: agente conversacional](desarrollo/iteracion-5-agente-conversacional.md).
 19. [Iteración 6: orquestación controlada del LLM](desarrollo/iteracion-6-orquestacion-llm-controlada.md).
 20. [Iteración 7: File Search documental](desarrollo/iteracion-7-file-search-documental.md).
+21. [Integración local con RADIA](desarrollo/integracion-radia.md).
 
 ## Estado de validación
 
