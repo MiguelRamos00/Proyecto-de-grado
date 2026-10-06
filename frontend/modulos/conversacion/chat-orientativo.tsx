@@ -43,9 +43,13 @@ export function ChatOrientativo({ diagnosticoId }: { diagnosticoId?: string }) {
   }
 
   return (
-    <section className="tarjeta tarjeta-chat">
-      <p className="etiqueta">Proyecto RADIA</p>
-      <h1>Chat orientativo</h1>
+    <section className="tarjeta tarjeta-chat" aria-labelledby="titulo-chat-orientativo">
+      <header className="cabecera-chat-orientativo">
+        <p className="marca-radia">RADIA</p>
+        <p className="etiqueta">ORIENTACIÓN ACADÉMICA</p>
+        <h1 id="titulo-chat-orientativo">Conversemos sobre tu aprendizaje.</h1>
+        <p className="descripcion-chat">Encuentra una orientación inicial para fortalecer tus competencias técnicas y actitudinales.</p>
+      </header>
       <p className="aviso">La conversación ofrece orientación general para el aprendizaje. No es una evaluación académica, psicológica ni profesional.</p>
 
       <form onSubmit={enviarMensaje} noValidate className="formulario-chat">
@@ -59,9 +63,12 @@ export function ChatOrientativo({ diagnosticoId }: { diagnosticoId?: string }) {
           disabled={estado === "enviando"}
         />
         {error && <p className="mensaje-error" role="alert">{error}</p>}
-        <button type="submit" disabled={estado === "enviando"}>
-          {estado === "enviando" ? "Enviando" : "Enviar mensaje"}
-        </button>
+        <div className="acciones-chat">
+          <button type="submit" disabled={estado === "enviando"}>
+            {estado === "enviando" ? "Enviando" : "Enviar mensaje"}
+          </button>
+          <span>Tu mensaje no se comparte con otras personas usuarias.</span>
+        </div>
       </form>
 
       {respuesta && (
@@ -100,7 +107,7 @@ export function ChatOrientativo({ diagnosticoId }: { diagnosticoId?: string }) {
         </section>
       )}
 
-      <p><Link href="/">Volver al inicio</Link></p>
+      <p className="pie-chat"><Link href="/">Volver al inicio del agente</Link></p>
     </section>
   );
 }

@@ -9,7 +9,7 @@ function ContenidoChat() {
   const diagnosticoId = parametros.get("diagnostico_id") ?? undefined;
 
   return (
-    <main>
+    <main className="pagina-chat-orientativo">
       <ChatOrientativo diagnosticoId={diagnosticoId} />
     </main>
   );
@@ -17,7 +17,7 @@ function ContenidoChat() {
 
 export default function PaginaChat() {
   return (
-    <Suspense fallback={<main><section className="tarjeta"><p>Preparando el chat orientativo.</p></section></main>}>
+    <Suspense fallback={<main className="pagina-chat-orientativo"><section className="tarjeta"><p>Preparando el chat orientativo.</p></section></main>}>
       <ContenidoChat />
     </Suspense>
   );
