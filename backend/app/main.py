@@ -1,3 +1,5 @@
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -10,9 +12,18 @@ aplicacion = FastAPI(
     description="API base del MVP del agente conversacional del proyecto RADIA.",
 )
 
+
+def obtener_origenes_cors() -> list[str]:
+    """Obtiene los orígenes autorizados para las interfaces del agente."""
+    valor = os.getenv(
+        "ORIGENES_CORS",
+        "http://localhost:3000,http://localhost:5173",
+    )
+    return [origen.strip() for origen in valor.split(",") if origen.strip()]
+
 aplicacion.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=obtener_origenes_cors(),
     allow_credentials=False,
     allow_methods=["GET", "POST"],
     allow_headers=["Content-Type"],
