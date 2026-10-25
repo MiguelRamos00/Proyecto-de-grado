@@ -30,11 +30,11 @@ export default function Inicio() {
 
   return (
     <main>
-      <section>
+      <section className="tarjeta-inicio">
         <p className="etiqueta">Proyecto RADIA</p>
-        <h1>Agente de orientación</h1>
-        <p>Base técnica del MVP para apoyar el fortalecimiento de competencias técnicas y actitudinales.</p>
-        <p className="aviso">Las recomendaciones del futuro agente serán orientativas y no reemplazarán acompañamiento profesional.</p>
+        <h1>Agente de orientación académica</h1>
+        <p>Conversa sobre las competencias técnicas y actitudinales que deseas fortalecer, o explora el diagnóstico simulado del MVP.</p>
+        <p className="aviso">La orientación es general y no constituye una evaluación académica, psicológica ni profesional. El diagnóstico simulado es una función independiente y no es necesario para iniciar el chat.</p>
         <p><Link className="enlace-principal" href="/diagnostico">Iniciar diagnóstico simulado</Link></p>
         <p><Link href="/chat">Abrir chat orientativo</Link></p>
         <button type="button" onClick={verificarBackend} disabled={estado === "verificando"}>
